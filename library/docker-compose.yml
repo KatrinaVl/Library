@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+    api:
+        build: 
+            context: .
+            dockerfile: api/Dockerfile 
+        entrypoint: ["/wait.sh", "bash", "-c", "uvicorn api.api:app --host 0.0.0.0 --port 8090 --reload"]
+        environment:
+            API_SERVER_URL: "http://api:8090"
+            PYTHONPATH: '/library'
+        ports:
+            - 8090:8090
+        depends_on:
+            - database
+        networks:
+            - social-network
+        volumes:
+            - ./api:/library/api
+
+
+    database:
+        image: postgres:12
+
+        environment:
+            POSTGRES_USER: KV
+            POSTGRES_PASSWORD: KV_pass
+            POSTGRES_DB: library_db
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - social-network
+
+    alembic:
+        build:
+            context: .
+            dockerfile: alembic/Dockerfile
+        depends_on:
+            - database
+        environment:
+            DATABASE_URL: "postgresql://KV:KV_pass@database:5432/library_db"
+            PYTHONPATH: '/library'
+        entrypoint: ["/wait.sh", "bash", "-c", "alembic -x debug=true upgrade head"]
+        networks:
+            - social-network
+        volumes:
+            - ./alembic:/library/alembic
+            - ./api:/library/api
+        working_dir: /library
+
+volumes:
+    postgres_data:
+
+networks:
+    social-network:

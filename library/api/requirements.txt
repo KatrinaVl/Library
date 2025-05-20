@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+pydantic
+uuid
+PyJWT
+datetime
+pydantic[email]
+alembic
+netcat
