@@ -48,6 +48,31 @@ services:
             - ./api:/library/api
         working_dir: /library
 
+    book_service:
+        build: 
+            context: .
+            dockerfile: book_service/Dockerfile 
+        ports:
+            - "50051:50051"
+        networks:
+            - social-network
+        depends_on:
+            database:
+                condition: service_started
+            proto:
+                condition: service_started
+
+    proto:
+        build:
+            context: .
+            dockerfile: proto/Dockerfile 
+        environment:
+            PYTHONPATH : '/library'
+        networks:
+            - social-network
+        volumes:
+            - ./proto:/library/proto
+
 volumes:
     postgres_data:
 
