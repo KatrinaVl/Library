@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr
 """ data validation """
 
 
-class User(BaseModel):
+class Reader(BaseModel):
     name: str
     email: EmailStr
 

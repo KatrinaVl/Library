@@ -49,9 +49,8 @@ def register(request: model.Librarian):
         hash_password = hashlib.sha256(request.password.encode())
         hex_dig = hash_password.hexdigest()
 
-        database.create_librarian(
-            {"email": request.email, "password": hex_dig}
-        )
+        database.create_librarian({"email": request.email,
+                                   "password": hex_dig})
 
         return JSONResponse(
             content={"message": "registration is successful"}, status_code=200
@@ -154,6 +153,83 @@ def delete_book(book_id: str, token_body: dict = Depends(decode_token)):
             raise HTTPException(status_code=401, detail="Invalid token")
 
         response = {"message": "book is deleted"}
+        return JSONResponse(content=response, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=400)
+
+
+@app.post("/add_reader")
+def add_reader(reader: model.Reader, token_body: dict = Depends(decode_token)):
+    try:
+
+        librarian = database.find_librarian_id(token_body["librarian_id"])
+        if not librarian:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        database.add_reader(reader)
+        response = {"message": "reader is added"}
+        return JSONResponse(content=response, status_code=200)
+
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=400)
+
+
+@app.post("/update_reader/{reader_id}")
+def update_reader(reader_id: str, reader: model.Reader,
+                  token_body: dict = Depends(decode_token)):
+    try:
+
+        librarian = database.find_librarian_id(token_body["librarian_id"])
+        if not librarian:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        new_reader = database.update_reader(reader, reader_id)
+        response = {
+            "message": "information about reader has changed",
+            "reader": {"name": new_reader.name, "email": new_reader.email},
+        }
+        return JSONResponse(content=response, status_code=200)
+
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=400)
+
+
+@app.get("/get_reader/{reader_id}")
+def get_reader(reader_id: str, token_body: dict = Depends(decode_token)):
+    try:
+
+        librarian = database.find_librarian_id(token_body["librarian_id"])
+        if not librarian:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        reader = database.get_reader(reader_id)
+
+        response = {
+            "message": "reader is found",
+            "reader": {"name": reader.name, "email": reader.email},
+        }
+        return JSONResponse(content=response, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=400)
+
+
+@app.delete("/delete_reader/{reader_id}")
+def delete_reader(reader_id: str, token_body: dict = Depends(decode_token)):
+    try:
+
+        librarian = database.find_librarian_id(token_body["librarian_id"])
+        if not librarian:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        reader = database.delete_reader(reader_id)
+
+        if not reader:
+            raise HTTPException(status_code=401, detail="Reader is not found")
+
+        response = {
+            "message": "reader is deleted",
+            "reader": {"name": reader.name, "email": reader.email},
+        }
         return JSONResponse(content=response, status_code=200)
     except Exception as e:
         return JSONResponse(content={"message": str(e)}, status_code=400)
