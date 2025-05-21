@@ -4,6 +4,7 @@ from google.protobuf import empty_pb2
 
 from book_service import database
 import uuid
+import grpc
 
 
 class BookServiceImpl(book_service_pb2_grpc.BookServiceServicer):
@@ -80,3 +81,63 @@ class BookServiceImpl(book_service_pb2_grpc.BookServiceServicer):
             context.abort(grpc.StatusCode.NOT_FOUND, "Book is not found")
 
         return empty_pb2.Empty()
+
+    def TakeBook(self, request, context):
+
+        taken_book = database.take_book(request.id)
+        if not taken_book:
+            context.abort(grpc.StatusCode.NOT_FOUND, "Book is not found")
+
+        return book_service_pb2.TakenBook(success=taken_book)
+
+    def ReturnBook(self, request, context):
+
+        returned_book = database.return_book(request.id)
+        if not returned_book:
+            context.abort(grpc.StatusCode.NOT_FOUND, "Book is not found")
+
+        return book_service_pb2.TakenBook(success=returned_book)
+
+    def GetBooks(self, request, context):
+
+        books = database.get_books()
+
+        start = request.per_page * (request.page - 1)
+        end = min(((request.per_page * request.page)), len(books))
+
+        return book_service_pb2.BookList(
+            books=[
+                book_service_pb2.Book(
+                    id=b.id,
+                    title=b.title,
+                    author=b.author,
+                    publish_year=b.publish_year,
+                    isbn=b.isbn,
+                    count=b.count,
+                )
+                for b in books[start:end]
+            ]
+        )
+
+    def GetBooksForList(self, request, context):
+
+        book_ids = []
+
+        for b in request.book_ids:
+            book_ids.append(b.id)
+
+        books = database.get_books_for_list(book_ids)
+
+        return book_service_pb2.BookList(
+            books=[
+                book_service_pb2.Book(
+                    id=b.id,
+                    title=b.title,
+                    author=b.author,
+                    publish_year=b.publish_year,
+                    isbn=b.isbn,
+                    count=b.count,
+                )
+                for b in books
+            ]
+        )

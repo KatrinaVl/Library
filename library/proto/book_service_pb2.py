@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18proto/book_service.proto\x12\x04post\"e\n\x11\x43reateBookRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x14\n\x0cpublish_year\x18\x03 \x01(\x03\x12\x0c\n\x04isbn\x18\x04 \x01(\t\x12\r\n\x05\x63ount\x18\x05 \x01(\x03\"q\n\x11UpdateBookRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x03 \x01(\t\x12\x14\n\x0cpublish_year\x18\x04 \x01(\x03\x12\x0c\n\x04isbn\x18\x05 \x01(\t\x12\r\n\x05\x63ount\x18\x06 \x01(\x03\"d\n\x04\x42ook\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x03 \x01(\t\x12\x14\n\x0cpublish_year\x18\x04 \x01(\x03\x12\x0c\n\x04isbn\x18\x05 \x01(\t\x12\r\n\x05\x63ount\x18\x06 \x01(\x03\"\x19\n\x0b\x42ookRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x07\n\x05\x45mpty2\xcb\x01\n\x0b\x42ookService\x12\x31\n\nCreateBook\x12\x17.post.CreateBookRequest\x1a\n.post.Book\x12\x31\n\nUpdateBook\x12\x17.post.UpdateBookRequest\x1a\n.post.Book\x12,\n\nDeleteBook\x12\x11.post.BookRequest\x1a\x0b.post.Empty\x12(\n\x07GetBook\x12\x11.post.BookRequest\x1a\n.post.Bookb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18proto/book_service.proto\x12\x04post\"e\n\x11\x43reateBookRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x14\n\x0cpublish_year\x18\x03 \x01(\x03\x12\x0c\n\x04isbn\x18\x04 \x01(\t\x12\r\n\x05\x63ount\x18\x05 \x01(\x03\"q\n\x11UpdateBookRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x03 \x01(\t\x12\x14\n\x0cpublish_year\x18\x04 \x01(\x03\x12\x0c\n\x04isbn\x18\x05 \x01(\t\x12\r\n\x05\x63ount\x18\x06 \x01(\x03\"d\n\x04\x42ook\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x03 \x01(\t\x12\x14\n\x0cpublish_year\x18\x04 \x01(\x03\x12\x0c\n\x04isbn\x18\x05 \x01(\t\x12\r\n\x05\x63ount\x18\x06 \x01(\x03\"\x19\n\x0b\x42ookRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x1c\n\tTakenBook\x12\x0f\n\x07success\x18\x01 \x01(\x08\"%\n\x08\x42ookList\x12\x19\n\x05\x62ooks\x18\x01 \x03(\x0b\x32\n.post.Book\"2\n\x0b\x42ookIdsList\x12#\n\x08\x62ook_ids\x18\x01 \x03(\x0b\x32\x11.post.BookRequest\"*\n\x08PageInfo\x12\x10\n\x08per_page\x18\x01 \x01(\x03\x12\x0c\n\x04page\x18\x02 \x01(\x03\"\x07\n\x05\x45mpty2\x8f\x03\n\x0b\x42ookService\x12\x31\n\nCreateBook\x12\x17.post.CreateBookRequest\x1a\n.post.Book\x12\x31\n\nUpdateBook\x12\x17.post.UpdateBookRequest\x1a\n.post.Book\x12,\n\nDeleteBook\x12\x11.post.BookRequest\x1a\x0b.post.Empty\x12(\n\x07GetBook\x12\x11.post.BookRequest\x1a\n.post.Book\x12.\n\x08TakeBook\x12\x11.post.BookRequest\x1a\x0f.post.TakenBook\x12\x30\n\nReturnBook\x12\x11.post.BookRequest\x1a\x0f.post.TakenBook\x12*\n\x08GetBooks\x12\x0e.post.PageInfo\x1a\x0e.post.BookList\x12\x34\n\x0fGetBooksForList\x12\x11.post.BookIdsList\x1a\x0e.post.BookListb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -39,8 +39,16 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_BOOK']._serialized_end=352
   _globals['_BOOKREQUEST']._serialized_start=354
   _globals['_BOOKREQUEST']._serialized_end=379
-  _globals['_EMPTY']._serialized_start=381
-  _globals['_EMPTY']._serialized_end=388
-  _globals['_BOOKSERVICE']._serialized_start=391
-  _globals['_BOOKSERVICE']._serialized_end=594
+  _globals['_TAKENBOOK']._serialized_start=381
+  _globals['_TAKENBOOK']._serialized_end=409
+  _globals['_BOOKLIST']._serialized_start=411
+  _globals['_BOOKLIST']._serialized_end=448
+  _globals['_BOOKIDSLIST']._serialized_start=450
+  _globals['_BOOKIDSLIST']._serialized_end=500
+  _globals['_PAGEINFO']._serialized_start=502
+  _globals['_PAGEINFO']._serialized_end=544
+  _globals['_EMPTY']._serialized_start=546
+  _globals['_EMPTY']._serialized_end=553
+  _globals['_BOOKSERVICE']._serialized_start=556
+  _globals['_BOOKSERVICE']._serialized_end=955
 # @@protoc_insertion_point(module_scope)

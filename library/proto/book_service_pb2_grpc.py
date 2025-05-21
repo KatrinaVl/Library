@@ -54,6 +54,26 @@ class BookServiceStub(object):
                 request_serializer=proto_dot_book__service__pb2.BookRequest.SerializeToString,
                 response_deserializer=proto_dot_book__service__pb2.Book.FromString,
                 _registered_method=True)
+        self.TakeBook = channel.unary_unary(
+                '/post.BookService/TakeBook',
+                request_serializer=proto_dot_book__service__pb2.BookRequest.SerializeToString,
+                response_deserializer=proto_dot_book__service__pb2.TakenBook.FromString,
+                _registered_method=True)
+        self.ReturnBook = channel.unary_unary(
+                '/post.BookService/ReturnBook',
+                request_serializer=proto_dot_book__service__pb2.BookRequest.SerializeToString,
+                response_deserializer=proto_dot_book__service__pb2.TakenBook.FromString,
+                _registered_method=True)
+        self.GetBooks = channel.unary_unary(
+                '/post.BookService/GetBooks',
+                request_serializer=proto_dot_book__service__pb2.PageInfo.SerializeToString,
+                response_deserializer=proto_dot_book__service__pb2.BookList.FromString,
+                _registered_method=True)
+        self.GetBooksForList = channel.unary_unary(
+                '/post.BookService/GetBooksForList',
+                request_serializer=proto_dot_book__service__pb2.BookIdsList.SerializeToString,
+                response_deserializer=proto_dot_book__service__pb2.BookList.FromString,
+                _registered_method=True)
 
 
 class BookServiceServicer(object):
@@ -83,6 +103,30 @@ class BookServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def TakeBook(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReturnBook(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetBooks(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetBooksForList(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_BookServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -105,6 +149,26 @@ def add_BookServiceServicer_to_server(servicer, server):
                     servicer.GetBook,
                     request_deserializer=proto_dot_book__service__pb2.BookRequest.FromString,
                     response_serializer=proto_dot_book__service__pb2.Book.SerializeToString,
+            ),
+            'TakeBook': grpc.unary_unary_rpc_method_handler(
+                    servicer.TakeBook,
+                    request_deserializer=proto_dot_book__service__pb2.BookRequest.FromString,
+                    response_serializer=proto_dot_book__service__pb2.TakenBook.SerializeToString,
+            ),
+            'ReturnBook': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReturnBook,
+                    request_deserializer=proto_dot_book__service__pb2.BookRequest.FromString,
+                    response_serializer=proto_dot_book__service__pb2.TakenBook.SerializeToString,
+            ),
+            'GetBooks': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetBooks,
+                    request_deserializer=proto_dot_book__service__pb2.PageInfo.FromString,
+                    response_serializer=proto_dot_book__service__pb2.BookList.SerializeToString,
+            ),
+            'GetBooksForList': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetBooksForList,
+                    request_deserializer=proto_dot_book__service__pb2.BookIdsList.FromString,
+                    response_serializer=proto_dot_book__service__pb2.BookList.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -215,6 +279,114 @@ class BookService(object):
             '/post.BookService/GetBook',
             proto_dot_book__service__pb2.BookRequest.SerializeToString,
             proto_dot_book__service__pb2.Book.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def TakeBook(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/post.BookService/TakeBook',
+            proto_dot_book__service__pb2.BookRequest.SerializeToString,
+            proto_dot_book__service__pb2.TakenBook.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReturnBook(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/post.BookService/ReturnBook',
+            proto_dot_book__service__pb2.BookRequest.SerializeToString,
+            proto_dot_book__service__pb2.TakenBook.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetBooks(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/post.BookService/GetBooks',
+            proto_dot_book__service__pb2.PageInfo.SerializeToString,
+            proto_dot_book__service__pb2.BookList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetBooksForList(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/post.BookService/GetBooksForList',
+            proto_dot_book__service__pb2.BookIdsList.SerializeToString,
+            proto_dot_book__service__pb2.BookList.FromString,
             options,
             channel_credentials,
             insecure,

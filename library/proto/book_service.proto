@@ -32,6 +32,22 @@ message BookRequest {
   string id = 1;
 }
 
+message TakenBook {
+  bool success = 1;
+}
+
+message BookList {
+  repeated Book books = 1;
+}
+
+message BookIdsList {
+  repeated BookRequest book_ids = 1;
+}
+
+message PageInfo {
+  int64 per_page = 1;
+  int64 page = 2;
+}
 
 message Empty {}
 
@@ -41,5 +57,8 @@ service BookService {
   rpc UpdateBook(UpdateBookRequest) returns (Book);
   rpc DeleteBook(BookRequest) returns (Empty);
   rpc GetBook(BookRequest) returns (Book);
-
+  rpc TakeBook(BookRequest) returns (TakenBook);
+  rpc ReturnBook(BookRequest) returns (TakenBook);
+  rpc GetBooks(PageInfo) returns (BookList);
+  rpc GetBooksForList(BookIdsList) returns (BookList);
 }

@@ -233,3 +233,156 @@ def delete_reader(reader_id: str, token_body: dict = Depends(decode_token)):
         return JSONResponse(content=response, status_code=200)
     except Exception as e:
         return JSONResponse(content={"message": str(e)}, status_code=400)
+
+
+@app.post("/give_book")
+def give_book(request: model.GiveRequest,
+              token_body: dict = Depends(decode_token)):
+    try:
+
+        librarian = database.find_librarian_id(token_body["librarian_id"])
+        if not librarian:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        taken_book = stub.TakeBook(
+            book_service_pb2.BookRequest(id=request.book_id))
+        if not taken_book:
+            raise HTTPException(status_code=409,
+                                detail=f"There is no any book")
+
+        success = database.give_book(request)
+        if not success:
+            returned_book = stub.ReturnBook(
+                book_service_pb2.BookRequest(id=request.book_id)
+            )
+            raise HTTPException(
+                status_code=409, detail="Too many book has already taken"
+            )
+
+        response = {
+            "message":
+            f"reader {request.reader_id} take the {request.book_id} book"
+        }
+        return JSONResponse(content=response, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=400)
+
+
+@app.post("/return_book")
+def return_book(request: model.BorrowRequest,
+                token_body: dict = Depends(decode_token)):
+    try:
+
+        librarian = database.find_librarian_id(token_body["librarian_id"])
+        if not librarian:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        borrowed_info = database.return_book(request.borrow_id,
+                                             request.book_id)
+
+        if not borrowed_info:
+            raise HTTPException(
+                status_code=409, detail="There is no any borrowed records"
+            )
+
+        if borrowed_info == "Book has already returned":
+            raise HTTPException(status_code=409, detail=borrowed_info)
+
+        if borrowed_info == "Wrong book was returned":
+            raise HTTPException(status_code=409, detail=borrowed_info)
+
+        returned_book = stub.ReturnBook(
+            book_service_pb2.BookRequest(id=request.book_id)
+        )
+
+        if returned_book:
+
+            response = {
+                "message":
+                f"reader {borrowed_info['reader_id']} "
+                f"return the {request.book_id} book"
+            }
+
+        else:
+            response = {"message": f"librarian can't return the "
+                        f"{request.book_id} book"}
+
+        return JSONResponse(content=response, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=400)
+
+
+@app.get("/get_books")
+def get_books(page_info: model.PageInfo):
+    try:
+
+        returned = stub.GetBooks(
+            book_service_pb2.PageInfo(per_page=page_info.per_page,
+                                      page=page_info.page)
+        )
+
+        books = []
+
+        for b in returned.books:
+            books.append(
+                {
+                    "id": b.id,
+                    "title": b.title,
+                    "author": b.author,
+                    "publish_year": b.publish_year,
+                    "isbn": b.isbn,
+                    "count": b.count,
+                }
+            )
+
+        response = {"message": f"books are returned", "books": books}
+
+        return JSONResponse(content=response, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=400)
+
+
+@app.get("/get_books/{reader_id}")
+def get_books(
+    reader_id: str, page_info: model.PageInfo,
+    token_body: dict = Depends(decode_token)
+):
+    try:
+
+        librarian = database.find_librarian_id(token_body["librarian_id"])
+        if not librarian:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        books_ids = list(database.get_books(reader_id))
+
+        start = page_info.per_page * (page_info.page - 1)
+        end = min(((page_info.per_page * page_info.page)), len(books_ids))
+
+        returned = stub.GetBooksForList(
+            book_service_pb2.BookIdsList(
+                book_ids=[
+                    book_service_pb2.BookRequest(id=b_id)
+                    for b_id in books_ids[start:end]
+                ]
+            )
+        )
+
+        books = []
+
+        for b in returned.books:
+            books.append(
+                {
+                    "id": b.id,
+                    "title": b.title,
+                    "author": b.author,
+                    "publish_year": b.publish_year,
+                    "isbn": b.isbn,
+                    "count": b.count,
+                }
+            )
+
+        response = {"message": f"books are returned", "books": books}
+
+        return JSONResponse(content=response, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=400)

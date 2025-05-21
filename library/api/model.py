@@ -24,3 +24,18 @@ class BookInfo(BaseModel):
 
 class BookId(BaseModel):
     id: str
+
+
+class GiveRequest(BaseModel):
+    book_id: str
+    reader_id: str
+
+
+class BorrowRequest(BaseModel):
+    book_id: str
+    borrow_id: str
+
+
+class PageInfo(BaseModel):
+    per_page: int
+    page: int
