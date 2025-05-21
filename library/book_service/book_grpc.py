@@ -3,7 +3,6 @@ from proto import book_service_pb2_grpc
 from google.protobuf import empty_pb2
 
 from book_service import database
-import uuid
 import grpc
 
 
@@ -77,7 +76,7 @@ class BookServiceImpl(book_service_pb2_grpc.BookServiceServicer):
 
         book = database.delete_book(request.id)
 
-        if not book:
+        if book is None:
             context.abort(grpc.StatusCode.NOT_FOUND, "Book is not found")
 
         return empty_pb2.Empty()
@@ -85,7 +84,7 @@ class BookServiceImpl(book_service_pb2_grpc.BookServiceServicer):
     def TakeBook(self, request, context):
 
         taken_book = database.take_book(request.id)
-        if not taken_book:
+        if taken_book is None:
             context.abort(grpc.StatusCode.NOT_FOUND, "Book is not found")
 
         return book_service_pb2.TakenBook(success=taken_book)
@@ -93,8 +92,6 @@ class BookServiceImpl(book_service_pb2_grpc.BookServiceServicer):
     def ReturnBook(self, request, context):
 
         returned_book = database.return_book(request.id)
-        if not returned_book:
-            context.abort(grpc.StatusCode.NOT_FOUND, "Book is not found")
 
         return book_service_pb2.TakenBook(success=returned_book)
 

@@ -81,11 +81,14 @@ def delete_book(book_id):
     db = SessionLocal()
     book = db.query(Books).filter(Books.id == book_id).first()
 
-    if book:
-        db.delete(book)
-        db.commit()
+    if not book:
+        return None
 
+    db.delete(book)
+    db.commit()
     db.close()
+
+    return True
 
 
 def take_book(book_id):

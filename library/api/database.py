@@ -81,8 +81,10 @@ def find_librarian_id(lib_id):
 
 def add_reader(reader: model.Reader):
 
-    add_reader = Readers(id=str(uuid.uuid4()),
-                         email=reader.email, name=reader.name)
+    add_reader = Readers(
+        id=str(uuid.uuid4()),
+        email=reader.email,
+        name=reader.name)
 
     db = SessionLocal()
 
@@ -139,19 +141,20 @@ def delete_reader(reader_id):
 def give_book(request: model.GiveRequest):
     db = SessionLocal()
 
-    reader = db.query(Readers).filter(
-        Readers.id == request.reader_id).first()
+    reader = db.query(Readers).filter(Readers.id == request.reader_id).first()
 
     if reader.count == 3:
-        return False
+        return (False, None)
 
     reader.count += 1
 
     db.commit()
     db.refresh(reader)
 
+    borrowed_id = str(uuid.uuid4())
+
     add_taken_book = BorrowedBooks(
-        id=str(uuid.uuid4()),
+        id=borrowed_id,
         book_id=request.book_id,
         reader_id=request.reader_id,
         borrow_date=datetime.utcnow(),
@@ -162,7 +165,7 @@ def give_book(request: model.GiveRequest):
     db.refresh(add_taken_book)
     db.close()
 
-    return True
+    return (True, borrowed_id)
 
 
 def return_book(borrowed_id: str, returned_book_id: str):
